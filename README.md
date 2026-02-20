@@ -52,7 +52,7 @@ diagonalization.
 We restrict charge states to
 
 $$
-n \in \left\{-\frac{N}{2}, \dots, \frac{N}{2}-1\right\}
+n \in \{-\frac{N}{2}, \ldots, \frac{N}{2}-1\}
 $$
 
 The diagonal elements are
@@ -203,3 +203,4 @@ QSM\
 Hamiltonian Simulation\
 Energy Spectrum\
 Noise Perturbation
+
