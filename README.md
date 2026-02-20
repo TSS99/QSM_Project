@@ -1,61 +1,76 @@
-# QSM Project
+# Superconducting Quantum Research Program
 
-Welcome to the team repository for the **Superconducting Quantum Research Program – Chip Design Hackathon 2024**.
+## Chip Design Hackathon 2024
 
----
+### Project 11 -- Transmon Modeling using QSM
+
+------------------------------------------------------------------------
 
 ## Team Members
 
-- **Tilock Sadhukhan** (Team Leader)  
-- Indranil Ghosh  
-- Achyut Chebiyam  
-- Kazim Mumtaz  
-- Aniekan Afangideh  
+-   Tilock Sadhukhan (Team Leader)
+-   Indranil Ghosh
+-   Achyut Chebiyam
+-   Kazim Mumtaz
+-   Aniekan Afangideh
 
----
+------------------------------------------------------------------------
 
-## Project Overview
+# Project Overview
 
-We implemented **Project 11**, which focuses on modeling two superconducting **transmon qubits** using the **Qubit Simulation Module (QSM)** and simulating their energy spectrum.
+This project implements a simplified transmon qubit model using the
+Qubit Simulation Module (QSM).
 
-Our work combines quantum circuit simulation with a simplified Hamiltonian-based description of a transmon system.
+Goals:
 
----
+-   Model a transmon Hamiltonian in a truncated charge basis
+-   Compute its energy spectrum
+-   Visualize eigenvalues
+-   Study spectral shifts under Hermitian noise
+-   Demonstrate basic QSM state preparation
 
-## Theoretical Background
+------------------------------------------------------------------------
 
-### Transmon Hamiltonian
+# Theoretical Background
 
-A transmon qubit is described by the Hamiltonian:
+## Transmon Hamiltonian
 
-\[
+$$
 H = 4E_C \hat{n}^2 - E_J \cos(\hat{\phi})
-\]
+$$
 
-where:
+Where:
 
-- \( E_C \) → Charging energy  
-- \( E_J \) → Josephson energy  
-- \( \hat{n} \) → Charge operator  
-- \( \hat{\phi} \) → Phase operator  
+-   $E_C$ = Charging energy\
+-   $E_J$ = Josephson energy\
+-   $\hat{n}$ = Charge operator\
+-   $\hat{\phi}$ = Phase operator
 
----
+------------------------------------------------------------------------
 
-### Discretized Hamiltonian
+## Truncated Charge Basis Approximation
 
-In a truncated charge basis, the Hamiltonian is approximated as:
+Charge states:
 
-\[
+$$
+n \in \left\{-\frac{N}{2}, \dots, \frac{N}{2}-1\right\}
+$$
+
+Diagonal terms:
+
+$$
 H_{nn} = 4E_C n^2
-\]
+$$
 
-\[
+Off-diagonal coupling:
+
+$$
 H_{n,n+1} = H_{n+1,n} = -\frac{E_J}{2}
-\]
+$$
 
-This results in a matrix of the form:
+Matrix structure:
 
-\[
+$$
 H =
 \begin{pmatrix}
 4E_C n_1^2 & -\frac{E_J}{2} & 0 & \cdots \\
@@ -63,133 +78,173 @@ H =
 0 & -\frac{E_J}{2} & 4E_C n_3^2 & \cdots \\
 \vdots & \vdots & \vdots & \ddots
 \end{pmatrix}
-\]
+$$
 
----
+------------------------------------------------------------------------
 
-### Energy Spectrum
+## Energy Spectrum
 
-The energy levels are obtained by solving the eigenvalue problem:
+Solve the eigenvalue equation:
 
-\[
+$$
 H |\psi_k\rangle = E_k |\psi_k\rangle
-\]
+$$
 
-where:
+Computed using:
 
-- \( E_k \) → Energy eigenvalues  
-- \( |\psi_k\rangle \) → Eigenstates  
+``` python
+np.linalg.eigh(H)
+```
 
----
+------------------------------------------------------------------------
 
-### Noise Model
+## Noise Model
 
-To simulate experimental imperfections, random Hermitian noise is added:
+Random Gaussian noise:
 
-\[
-H_{\text{noisy}} = H + \frac{N + N^T}{2}
-\]
+$$
+N_{ij} \sim \mathcal{N}(0,\sigma^2)
+$$
 
-where:
+Hermitian perturbation:
 
-\[
-N_{ij} \sim \mathcal{N}(0, \sigma^2)
-\]
+$$
+H_{noisy} = H + \frac{N + N^T}{2}
+$$
 
-This preserves Hermiticity while introducing perturbations.
+------------------------------------------------------------------------
 
----
+# QSM State Preparation
 
-## Simulation Workflow
+Initial state:
 
-### 1. QSM Initialization
-
-We initialize a two-qubit quantum system:
-
-\[
+$$
 |\psi_0\rangle = |00\rangle
-\]
+$$
 
----
+Apply Hadamard on qubit 0:
 
-### 2. State Preparation
-
-A Hadamard gate is applied to qubit 0:
-
-\[
-H |0\rangle =
-\frac{1}{\sqrt{2}} (|0\rangle + |1\rangle)
-\]
+$$
+H|0\rangle = \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)
+$$
 
 Resulting state:
 
-\[
-|\psi\rangle =
-\frac{1}{\sqrt{2}} (|00\rangle + |10\rangle)
-\]
+$$
+|\psi\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |10\rangle)
+$$
 
----
+------------------------------------------------------------------------
 
-### 3. Hamiltonian Construction
+# Installation
 
-We construct a truncated transmon Hamiltonian:
+Create virtual environment:
 
-\[
-H = 4E_C n^2 - \frac{E_J}{2} (|n\rangle\langle n+1| + |n+1\rangle\langle n|)
-\]
+Linux / macOS:
 
----
+``` bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-### 4. Diagonalization
+Windows:
 
-Energy levels are computed via:
+``` powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
 
-\[
-E_k = \text{eig}(H)
-\]
+Install dependencies:
 
----
+``` bash
+pip install numpy matplotlib
+```
 
-### 5. Visualization
+If QSM is available:
 
-We plot:
+``` bash
+pip install qsm
+```
 
-- Discrete quantum states  
-- Corresponding energy eigenvalues  
+------------------------------------------------------------------------
 
----
+# Running the Simulation
 
-## Results
+``` bash
+python transmon_simulation.py
+```
 
-The simulation produced:
+You will see:
 
-- A discrete energy spectrum  
-- Clear separation of eigenstates  
-- Observable shifts under noise perturbation  
+-   State vector output
+-   Hamiltonian matrix
+-   Eigenvalues
+-   Energy spectrum plot
+-   Noisy spectrum comparison
 
-This provides insight into the behavior of a simplified transmon system.
+------------------------------------------------------------------------
 
----
+# Code
 
+``` python
+from qsm import QSM
+import numpy as np
+import matplotlib.pyplot as plt
 
-Key components:
+def initialize_qsm():
+    num_qubits = 2
+    qsm_system = QSM(num_qubits)
+    return qsm_system
 
-- Hamiltonian definition  
-- Eigenvalue computation  
-- Noise modeling  
-- Energy spectrum visualization  
+def define_transmon_hamiltonian(num_levels=4, E_C=0.2, E_J=1.0):
+    n = np.arange(-num_levels // 2, num_levels // 2)
+    H = np.diag(4 * E_C * (n**2))
+    for i in range(len(n) - 1):
+        H[i, i + 1] = H[i + 1, i] = -E_J / 2
+    return H
 
----
+def compute_energy_levels(H):
+    eigenvalues, eigenvectors = np.linalg.eigh(H)
+    return eigenvalues, eigenvectors
 
-## Project Demonstration
+def plot_energy_spectrum(eigenvalues):
+    plt.plot(eigenvalues, 'o')
+    plt.xlabel('State Index')
+    plt.ylabel('Energy Level')
+    plt.title('Energy Spectrum')
+    plt.grid(True)
+    plt.show()
 
-A detailed explanation of the project is available here:
+def add_noise_to_hamiltonian(H, noise_level=0.01):
+    noise = noise_level * np.random.randn(*H.shape)
+    return H + (noise + noise.T) / 2
 
-📺 **YouTube Video**  
+if __name__ == "__main__":
+    qsm_system = initialize_qsm()
+    qsm_system.h(0)
+    print("State Vector:", qsm_system.state_vector())
+
+    H = define_transmon_hamiltonian()
+    eigenvalues, _ = compute_energy_levels(H)
+    plot_energy_spectrum(eigenvalues)
+
+    noisy_H = add_noise_to_hamiltonian(H)
+    noisy_eigenvalues, _ = compute_energy_levels(noisy_H)
+    plot_energy_spectrum(noisy_eigenvalues)
+```
+
+------------------------------------------------------------------------
+
+# Keywords
+
+Superconducting Qubits\
+Transmon\
+QSM\
+Hamiltonian Simulation\
+Energy Spectrum\
+Quantum Modeling
+
+------------------------------------------------------------------------
+
+Demo Video:\
 https://youtu.be/J3bacAgWORs?si=M1Ex9QVI--Wiy253
-
----
-
-## Keywords
-
-Superconducting Qubits • Transmon • QSM • Hamiltonian Simulation • Energy Spectrum • Quantum Modeling
